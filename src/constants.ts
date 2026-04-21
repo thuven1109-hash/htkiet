@@ -13,7 +13,7 @@ export const FAVORABILITY_LEVELS = [
   { threshold: -500, label: "Sát tâm", color: "#000000", icon: "💀" }, // Black
 ];
 
-export const CHAR_AVATAR = "https://lh3.googleusercontent.com/u/0/d/13zl5gqCSjCYz_k9sY04UXPDH3gLvGkB4";
+export const CHAR_AVATAR = "https://lh3.googleusercontent.com/u/0/d/1S0v-4bz0rF_AU6sYAEurOeqCopmyJyVi";
 
 export const SYSTEM_PROMPT = `
 [QUY TẮC HỆ THỐNG CỐ ĐỊNH - BẮT BUỘC (LUÔN ÁP DỤNG)]
