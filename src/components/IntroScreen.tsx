@@ -20,7 +20,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onStart, onToggleSideb
   const [selectedAvatar, setSelectedAvatar] = React.useState(CHAR_AVATAR);
 
   const AVATAR_OPTIONS = [
-    "https://lh3.googleusercontent.com/u/0/d/13zl5gqCSjCYz_k9sY04UXPDH3gLvGkB4"
+    "https://lh3.googleusercontent.com/u/0/d/1S0v-4bz0rF_AU6sYAEurOeqCopmyJyVi"
   ];
 
   const handleSubmit = (e: React.FormEvent) => {
