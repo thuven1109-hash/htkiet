@@ -29,7 +29,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onStart, onToggleSideb
     
     onStart({
       name: name.trim(),
-      appearance: appearance.trim() || "22 tuổi. Làn da trắng bóc bẩm sinh, nét đẹp thanh thoát, rực rỡ và kiêu hãnh của phụ nữ hiện đại dù phải khoác lên mình bộ áo bà ba mộc mạc.",
+      appearance: appearance.trim() || "22 tuổi. Làn da trắng bóc bẩm sinh. Đẹp tợ tiên sa, cốt cách tiên phàm rớt xuống chốn nhơn gian. Dung mạo em đẹp nhứt Lục tỉnh Nam Kỳ, ngó bề rực rỡ, chim sa cá lặn mần lóa mắt người ngó. Giữ mãi vẻ đẹp ở tuổi mới đến dù đã trôi qua 4 năm.",
       personality: personality.trim(),
       age: 22,
       background: "Linh hồn là một cô gái hiện đại 18 tuổi ở thế kỷ 21, trượt chân ở Đà Lạt xuyên không về thập niên 1930. Mất trí nhớ suốt 4 năm, được Cậu Hai nhặt về từ rừng cao su, làm con hầu rồi được nâng lên làm vợ lẽ. Vừa mới lấy lại được ký ức sau vụ sẩy thai do Cậu Hai gây ra."
