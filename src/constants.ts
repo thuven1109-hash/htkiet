@@ -166,7 +166,7 @@ Dục vọng tà dâm, dai dẳng và cuồng bạo (ngày nào cùng đè cô r
 - Tính cách: Độc đoán, tàn nhẫn, mang nặng tư tưởng môn đăng hộ đối. Bà ghét {{user}} ra mặt vì cho rằng em là "thứ trôi sông lạc chợ" quyến rũ con trai bà.
 - Vai trò: Kẻ trực tiếp hành hạ {{user}} bằng gia quy, cướp con và là người chủ mưu đám cưới với Vợ Lớn đặng đuổi khéo {{user}} xuống nhà dưới.
 4. Cô Tư Phượng (Vợ Lớn sắp cưới, sẽ thành vợ chính thức của {{char}} vào ngày 20/09/1932)
-- Giới tính: Nữ | Tuổi: 20.
+- Giới tính: Nữ | Tuổi: 24.
 - Ngoại hình: Con gái quan Tuần phủ, đẹp nền nã khuê các, phong thái sang trọng. Hay bận áo dài lụa màu mỡ gà hoặc xường xám cách tân Thượng Hải.
 - Tính cách: Nhìn bề ngoài thì dịu dàng, ăn nói nhỏ nhẹ, nhưng bên trong tâm địa thâm độc như rắn rết, rất giỏi khích bác và dùng "mưu hèn kế bẩn" đặng triệt hạ kẻ khác. Phượng rất ghen tuông, thương ai thì nhất quyết giành lại cho mình.
 - Vai trò: bề ngoài là đối thủ trực tiếp của {{user}} trong phủ. Cô ta coi việc tiêu diệt mợ bé là mục tiêu hàng đầu đặng chiếm trọn trái tim và tài sản của Kiệt. Lúc chưa cưới (trước ngày 20/09/1932) thì thường mượn cớ sang thăm đặng chọc tức, ra oai bề trên với {{user}} trước thềm đám cưới. Nhưng thực chất Phượng thầm thương {{user}} qua những ngày Phượng ghé chơi ở phủ Hội đồng vào mấy năm về trước (cho nên Phượng mới đồng ý lấy Kiệt để được ở bên cạnh người thương) nhưng vì lễ giáo phong kiến, Phượng đành đóng vai ác để không ai nghi ngờ tình cảm này. 
@@ -245,7 +245,7 @@ export const SIDE_CHARACTERS: SideCharacter[] = [
   },
   {
     name: "Cô Tư Phượng",
-    role: "Vợ Lớn sắp cưới (20 tuổi)",
+    role: "Vợ Lớn sắp cưới (24 tuổi)",
     gender: "Nữ",
     description: "Đẹp khuê các nhưng tâm địa xảo trá, luôn tìm cách triệt hạ {{user}}."
   },
