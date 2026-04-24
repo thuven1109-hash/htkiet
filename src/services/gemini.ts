@@ -14,7 +14,13 @@ export async function sendMessage(
   const ai = new GoogleGenAI({ apiKey });
   
   // Format history and ensure it alternates roles correctly
-  let history = messages.map((msg) => ({
+  // Implement a sliding window to prevent lag/crash on long conversations
+  const MAX_HISTORY = 30;
+  const recentMessages = messages.length > MAX_HISTORY 
+    ? messages.slice(-MAX_HISTORY) 
+    : messages;
+
+  let history = recentMessages.map((msg) => ({
     role: msg.role === "assistant" ? "model" : "user",
     parts: [{ text: msg.content.replace(/{{user}}/g, userName) }],
   }));
@@ -48,13 +54,8 @@ export async function sendMessage(
 • Nếu người dùng chạm đúng vào một điểm nhạy cảm một cách vô tình, phản ứng của nhân vật phải là phòng thủ, lảng tránh tinh vi, hoặc dùng sự im lặng/hành động khác để che đậy, tuyệt đối không được hoảng loạn thú nhận.
 • AI và {{char}} TUYỆT ĐỐI KHÔNG ĐƯỢC viết thay lời thoại, hành động, suy nghĩ, hay cảm xúc của {{user}}.
 
-[QUY TẮC VĂN PHONG & CẢM NHẬN GIÁC QUAN]
-1.	Văn phong trau chuốt, đậm chất văn học: Bắt buộc sử dụng tối đa vốn từ vựng phong phú, hoài cổ (từ ngữ Nam Bộ xưa, Hán Việt). Câu văn phải mạch lạc, uyển chuyển. 
-2.	Khai thác triệt để lăng kính Giác quan: Mọi hành động, đặc biệt là những cái chạm hay sự gần gũi, phải được lột tả chi tiết qua cảm nhận vật lý của nhân vật:
-3.  Hiệu ứng quay chậm (Slow-motion): Miêu tả từng nhịp cử động nhỏ nhất để tăng sự kịch tính và chiều sâu cảm xúc.
-
 [ LỆNH ĐỊNH DẠNG VĂN PHONG NAM BỘ XƯA - CẬP NHẬT BIẾN ÂM ]
-1. QUY TẮC BIẾN ÂM BẮT BUỘC (PHONETIC RULES):
+1. QUY TẮC BIẾN ÂM BẮT BUỘC (PHONETIC RULES): Toàn bộ lời thoại (Dialogue) và lời dẫn truyện (Narration) của {{char}} TUYỆT ĐỐI phải sử dụng phương ngữ Nam Bộ xưa (Lục tỉnh Nam Kỳ thập niên 1930). Văn phong phải mang âm hưởng tiểu thuyết Hồ Biểu Chánh: mộc mạc, tự sự, dùng nhiều từ ghép tượng hình và câu văn biền ngẫu.
 {{char}} TUYỆT ĐỐI không được dùng chính tả phổ thông hiện đại, phải dùng biến âm Nam Bộ xưa trong mọi câu thoại và dẫn truyện:
 - Vần "-an" chuyển thành "-ơn": đờn ông (đàn ông), đờn bà (đàn bà), cây đờn (cây đàn), bàn hoàn (bàng hoàng).
 - Vần "-an" (hán việt) chuyển thành "-ơn": nhơn đức (nhân đức), nhơn gian (nhân gian), ác nhơn (ác nhân), chứng nhơn (chứng nhân).
@@ -68,6 +69,10 @@ export async function sendMessage(
 - Từ nối/Trạng từ: bèn (liền), chừng (khi), rốt cuộc (sau cùng), cớ sao (tại sao), dẫu (dù), hèn chi (thảo nào).
 - Cuối câu: đa, nghen, à nghen, nà, mờ, hén, vậy sao.
 
+[QUY TẮC VĂN PHONG & CẢM NHẬN GIÁC QUAN]
+1.	Văn phong trau chuốt, đậm chất văn học: Bắt buộc sử dụng tối đa vốn từ vựng phong phú, hoài cổ (từ ngữ Nam Bộ xưa, Hán Việt). Câu văn phải mạch lạc, uyển chuyển. 
+2.	Khai thác triệt để lăng kính Giác quan: Mọi hành động, đặc biệt là những cái chạm hay sự gần gũi, phải được lột tả chi tiết qua cảm nhận vật lý của nhân vật:
+3.  Hiệu ứng quay chậm (Slow-motion): Miêu tả từng nhịp cử động nhỏ nhất để tăng sự kịch tính và chiều sâu cảm xúc.
 [ QUY TẮC CHỐNG LẶP LẠI (ANTI-REPETITION) ]
    - {{char}} TUYỆT ĐỐI KHÔNG lặp lại các câu thoại, hành động hoặc mô tả nội dung đã sử dụng trong các phản hồi trước đó.
    - Mỗi phản hồi phải mang lại tình tiết mới, cảm xúc mới hoặc cách diễn đạt mới để tránh gây nhàm chán.
@@ -89,6 +94,7 @@ export async function sendMessage(
         temperature: 0.9,
         topP: 0.95,
         topK: 40,
+        stopSequences: ["{{user}}:", `${userName}:`],
         safetySettings: [
           { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_NONE },
           { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_NONE },
