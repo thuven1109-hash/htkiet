@@ -1,0 +1,51 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Basic user preferences and sync metadata",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "lastSynced": { "type": "string", "format": "date-time" }
+      }
+    },
+    "UserApiKey": {
+      "title": "User API Keys",
+      "description": "Stored API keys associated with the account",
+      "type": "object",
+      "properties": {
+        "keys": { 
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "ChatSessionData": {
+      "title": "Chat Session",
+      "description": "The full state of a conversation",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "messages": { "type": "array" },
+        "userInfo": { "type": "object" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profile data"
+    },
+    "users/{userId}/config/apiKeys": {
+      "schema": "UserApiKey",
+      "description": "Stored API keys for the user"
+    },
+    "users/{userId}/sessions/{sessionId}": {
+      "schema": "ChatSessionData",
+      "description": "Individual chat sessions"
+    }
+  }
+}
