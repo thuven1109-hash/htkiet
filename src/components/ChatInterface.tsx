@@ -301,7 +301,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
           {hasError && onRetry && (
             <div className="flex flex-col items-center gap-4 mb-20">
               <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-500 rounded-2xl border border-red-100 dark:border-red-900/30 text-center text-sm">
-                Có lỗi xảy ra trong lúc kết nối với Quan Đốc Phủ (Có thể do mạng yếu hoặc API Key hết lượt).
+                Có lỗi xảy ra trong lúc kết nối với nhân vật (Có thể do mạng yếu hoặc API Key hết lượt).
               </div>
               <button
                 onClick={onRetry}
