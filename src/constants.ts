@@ -262,6 +262,12 @@ export const SIDE_CHARACTERS: SideCharacter[] = [
 
 export const GEMINI_MODELS: GeminiModel[] = [
   { 
+    id: "gemini-3.5-flash", 
+    name: "Gemini 3.5 Flash",
+    description: "Thế hệ 3.5 mới nhất, tốc độ cực kì vượt trội và khả năng xử lý ngữ cảnh sâu sắc.",
+    price: "Mới"
+  },
+  { 
     id: "gemini-3-flash-preview", 
     name: "Gemini 3 Flash",
     description: "Thế hệ 3 mới nhất, cực kỳ nhạy bén và thông minh.",
