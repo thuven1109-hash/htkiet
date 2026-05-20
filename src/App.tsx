@@ -10,7 +10,10 @@ import { ApiKeyModal } from "./components/ApiKeyModal";
 import { SettingsModal } from "./components/SettingsModal";
 import { MusicPlayer, FloatingMusicDisc } from "./components/MusicPlayer";
 
+import { saveToStorage, loadFromStorage } from "./lib/storage";
+
 const STORAGE_KEY = "hoi_uc_nam_ky_sessions";
+const CURRENT_SESSION_ID_STORAGE = "hoi_uc_nam_ky_current_session_id";
 const API_KEY_STORAGE = "user_api_key";
 const API_KEYS_LIST_STORAGE = "user_api_keys_list";
 const MODEL_STORAGE = "selectedModel";
@@ -26,6 +29,7 @@ export default function App() {
   const [sidebarTab, setSidebarTab] = React.useState<"history" | "characters" | "notebook" | "snapshots">("history");
   const [isTyping, setIsTyping] = React.useState(false);
   const [toast, setToast] = React.useState<string | null>(null);
+  const [isLoaded, setIsLoaded] = React.useState(false);
   
   // Notebook & Custom Character State
   const [notebookEvents, setNotebookEvents] = React.useState<string[]>([]);
@@ -46,7 +50,7 @@ export default function App() {
     }
     return [];
   });
-  const [selectedModel, setSelectedModel] = React.useState<string>(() => localStorage.getItem(MODEL_STORAGE) || "gemini-3-flash-preview");
+  const [selectedModel, setSelectedModel] = React.useState<string>(() => localStorage.getItem(MODEL_STORAGE) || "gemini-3.5-flash");
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = React.useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = React.useState(false);
   const [apiKeyError, setApiKeyError] = React.useState<string | null>(null);
@@ -112,23 +116,58 @@ export default function App() {
     }
   };
 
-  // Load sessions from localStorage
+  // Load sessions and restore previous state on mount
   React.useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
+    const initStorage = async () => {
       try {
-        const parsed = JSON.parse(saved);
-        setSessions(parsed);
+        const saved = await loadFromStorage<ChatSession[]>(STORAGE_KEY);
+        if (saved && Array.isArray(saved)) {
+          setSessions(saved);
+
+          // Restore previous active session if exists
+          const savedActiveId = localStorage.getItem(CURRENT_SESSION_ID_STORAGE);
+          if (savedActiveId && saved.some((s) => s.id === savedActiveId)) {
+            setCurrentSessionId(savedActiveId);
+            const activeSession = saved.find((s) => s.id === savedActiveId);
+            if (activeSession) {
+              setNotebookEvents(activeSession.notebookEvents || []);
+              setCustomCharacters(activeSession.customCharacters || []);
+              setDiaryEntries(activeSession.diaryEntries || []);
+            }
+          }
+        }
       } catch (e) {
-        console.error("Failed to parse sessions", e);
+        console.error("Failed to restore app state:", e);
+      } finally {
+        setIsLoaded(true);
       }
-    }
+    };
+    initStorage();
   }, []);
 
-  // Save sessions to localStorage
+  // Save active session ID to remember last session between reloads
   React.useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions));
-  }, [sessions]);
+    if (!isLoaded) return;
+    if (currentSessionId) {
+      localStorage.setItem(CURRENT_SESSION_ID_STORAGE, currentSessionId);
+    } else {
+      localStorage.removeItem(CURRENT_SESSION_ID_STORAGE);
+    }
+  }, [currentSessionId, isLoaded]);
+
+  // Save sessions to storage (debounced)
+  React.useEffect(() => {
+    if (!isLoaded) return; // Prevent overwriting with initial empty array before load completes
+
+    const timeout = setTimeout(() => {
+      saveToStorage(STORAGE_KEY, sessions).catch(err => {
+        console.error("Critical storage failure", err);
+        showToast("Không thể lưu dữ liệu! Vui lòng kiểm tra dung lượng trình duyệt.");
+      });
+    }, 300); // Shorter debounce (300ms) minimizes risk of data loss on sudden reload
+
+    return () => clearTimeout(timeout);
+  }, [sessions, isLoaded]);
 
   // Save music state to localStorage
   React.useEffect(() => {
@@ -360,9 +399,10 @@ export default function App() {
     } finally {
       setIsTyping(false);
       
+      const userMessageCount = currentSession.messages.filter(m => m.role === 'user').length;
       const today = new Date().toISOString().split('T')[0];
       const hasDiaryToday = diaryEntries.find(e => e.date === today);
-      if (!hasDiaryToday && Math.random() < 0.15) {
+      if (!hasDiaryToday && (userMessageCount >= 8 || Math.random() < 0.3)) {
         setTimeout(() => handleGenerateDiary(), 5000);
       }
     }
@@ -629,6 +669,7 @@ export default function App() {
         currentSession.messages,
         currentSession.userInfo.name,
         currentSession.userInfo.appearance,
+        currentSession.userInfo.personality || "",
         apiKey,
         selectedModel,
         diaryPrompt
@@ -738,6 +779,16 @@ export default function App() {
     }
   };
 
+  const handleImportSessions = (imported: ChatSession[]) => {
+    // Combine sessions without duplicates by ID
+    setSessions((prev) => {
+      const existingIds = new Set(prev.map(s => s.id));
+      const newItems = imported.filter(s => !existingIds.has(s.id));
+      return [...newItems, ...prev];
+    });
+    showToast(`Đã nhập thành công ${imported.length} phiên bản chat`);
+  };
+
   const handleDeleteSession = (id: string) => {
     setSessions(sessions.filter((s) => s.id !== id));
     if (currentSessionId === id) setCurrentSessionId(null);
@@ -812,6 +863,7 @@ export default function App() {
         currentSessionId={currentSessionId || ""}
         onSelectSession={handleSelectSession}
         onDeleteSession={handleDeleteSession}
+        onImportSessions={handleImportSessions}
         onNewChat={() => {
           setCurrentSessionId(null);
           setNotebookEvents([]);
