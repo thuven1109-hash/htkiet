@@ -15,7 +15,7 @@ export async function sendMessage(
   
   // Format history and ensure it alternates roles correctly
   // Implement a sliding window to prevent lag/crash on long conversations
-  const MAX_HISTORY = 30;
+  const MAX_HISTORY = 80;
   const recentMessages = messages.length > MAX_HISTORY 
     ? messages.slice(-MAX_HISTORY) 
     : messages;
